@@ -68,7 +68,7 @@ result.Sort((a, b) =&gt; a.Name.CompareTo(b.Name));</code></pre>
 
     <section class="slide code" aria-hidden="true">
       <div class="content">
-        <h2 class="eyebrow reveal">Code 2 — La version LINQ</h2>
+        <h2 class="eyebrow reveal">La version LINQ</h2>
         <pre class="codeblock reveal"><code>var result = users
     .Where(u =&gt; u.IsActive &amp;&amp; u.Age &gt;= 18)
     .OrderBy(u =&gt; u.Name)
@@ -96,14 +96,14 @@ result.Sort((a, b) =&gt; a.Name.CompareTo(b.Name));</code></pre>
           <div class="card">Filtrer &amp; projeter<br /><strong>Where</strong>, <strong>Select</strong></div>
           <div class="card">Trier<br /><strong>OrderBy</strong>, <strong>ThenBy</strong>, <strong>OrderByDescending</strong></div>
           <div class="card">Quantifier<br /><strong>Any</strong>, <strong>All</strong></div>
-          <div class="card">Un seul ou plusieurs<br /><strong>First</strong>, <strong>FirstOrDefault</strong>, <strong>Single</strong> (attention)</div>
+          <div class="card">Un seul ou plusieurs<br /><strong>First</strong>, <strong>FirstOrDefault</strong>, <strong>Single</strong></div>
         </div>
       </div>
     </section>
 
     <section class="slide code" aria-hidden="true">
       <div class="content">
-        <h2 class="eyebrow reveal">Code 3 — Les opérateurs en action</h2>
+        <h2 class="eyebrow reveal">Les opérateurs en action</h2>
         <pre class="codeblock reveal"><code>// Filtrer + projeter
 var emails = users
     .Where(u =&gt; u.IsActive)
@@ -131,7 +131,7 @@ var unique = users.Single(u =&gt; u.Id == 42);</code></pre>
 
     <section class="slide code" aria-hidden="true">
       <div class="content">
-        <h2 class="eyebrow reveal">Code 4 — Exécution différée</h2>
+        <h2 class="eyebrow reveal">Exécution différée</h2>
         <pre class="codeblock reveal"><code>var adults = users.Where(u =&gt; u.Age &gt;= 18);
 
 // les données changent ici
