@@ -1,0 +1,203 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Présentation de LINQ</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-layer"></div>
+  <main class="deck" aria-live="polite">
+    <section class="slide title" aria-hidden="false">
+      <div class="content">
+        <h1 class="reveal">Présentation de LINQ</h1>
+        <p class="subtitle reveal">Samuel Courchesne</p>
+      </div>
+    </section>
+
+    <section class="slide problem" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">Le problème</h2>
+        <p class="lede reveal">"J'ai une liste d'utilisateurs et je veux tous les actifs de 18 ans et plus, triés par nom."</p>
+        <p class="aside reveal">C'est simple à dire, mais pas toujours simple à écrire.</p>
+      </div>
+    </section>
+
+    <section class="slide code" aria-hidden="true">
+      <div class="content">
+        <h2 class="eyebrow reveal">ancienne méthode</h2>
+        <pre class="codeblock reveal"><code>var result = new List&lt;User&gt;();
+
+foreach (var user in users)
+{
+    if (user.IsActive &amp;&amp; user.Age &gt;= 18)
+    {
+        result.Add(user);
+    }
+}
+
+result.Sort((a, b) =&gt; a.Name.CompareTo(b.Name));</code></pre>
+      </div>
+    </section>
+
+    <section class="slide pain" aria-hidden="true">
+      <div class="content">
+        <div class="stack">
+          <div class="word reveal">Trop verbeux</div>
+          <div class="word reveal">Difficile à lire</div>
+          <div class="word reveal">Facile à casser</div>
+          <div class="word reveal">Logique éparpillée</div>
+        </div>
+        <p class="aside reveal">Et si on pouvait décrire ce qu'on veut, pas comment boucler ?</p>
+      </div>
+    </section>
+
+    <section class="slide idea" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">L'idée centrale de LINQ</h2>
+        <ul class="bullets reveal">
+          <li>- Une façon de questionner les données, lisible et déclarative</li>
+          <li>- Fonctionne sur les collections</li>
+          <li>- Se lit de haut en bas</li>
+          <li>- Opérations chaînables</li>
+          <li>- Pensée SQL</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide code" aria-hidden="true">
+      <div class="content">
+        <h2 class="eyebrow reveal">Code 2 — La version LINQ</h2>
+        <pre class="codeblock reveal"><code>var result = users
+    .Where(u =&gt; u.IsActive &amp;&amp; u.Age &gt;= 18)
+    .OrderBy(u =&gt; u.Name)
+    .ToList();</code></pre>
+      </div>
+    </section>
+
+    <section class="slide under-hood" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">Comment ça marche</h2>
+        <ul class="bullets reveal">
+          <li>- LINQ = chaîne d'objets IEnumerable lambdas</li>
+          <li>- Retourne un IEnumerable qui encapsule le précedent</li>
+          <li>- Rien n'est executé tant qu'un opérateur final n'est pas appelé</li>
+        </ul>
+        <pre class="codeblock small reveal"><code>.Where(Func&lt;T, bool&gt;)
+.Select(Func&lt;T, TResult&gt;)</code></pre>
+      </div>
+    </section>
+
+    <section class="slide essentials" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">Les opérateurs essentiels</h2>
+        <div class="cards reveal">
+          <div class="card">Filtrer &amp; projeter<br /><strong>Where</strong>, <strong>Select</strong></div>
+          <div class="card">Trier<br /><strong>OrderBy</strong>, <strong>ThenBy</strong>, <strong>OrderByDescending</strong></div>
+          <div class="card">Quantifier<br /><strong>Any</strong>, <strong>All</strong></div>
+          <div class="card">Un seul ou plusieurs<br /><strong>First</strong>, <strong>FirstOrDefault</strong>, <strong>Single</strong> (attention)</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide code" aria-hidden="true">
+      <div class="content">
+        <h2 class="eyebrow reveal">Code 3 — Les opérateurs en action</h2>
+        <pre class="codeblock reveal"><code>// Filtrer + projeter
+var emails = users
+    .Where(u =&gt; u.IsActive)
+    .Select(u =&gt; u.Email);
+
+// Trier
+var ordered = users
+    .OrderBy(u =&gt; u.LastName)
+    .ThenBy(u =&gt; u.FirstName);
+
+// Quantifier
+var hasAdmin = users.Any(u =&gt; u.IsAdmin);
+
+// Un seul
+var unique = users.Single(u =&gt; u.Id == 42);</code></pre>
+        <p class="aside reveal">Single lance une exception si 0 ou plusieurs éléments.</p>
+      </div>
+    </section>
+
+    <section class="slide gotcha" aria-hidden="true">
+      <div class="content">
+        <div class="giant reveal">LINQ n'exécute pas tout de suite</div>
+      </div>
+    </section>
+
+    <section class="slide code" aria-hidden="true">
+      <div class="content">
+        <h2 class="eyebrow reveal">Code 4 — Exécution différée</h2>
+        <pre class="codeblock reveal"><code>var adults = users.Where(u =&gt; u.Age &gt;= 18);
+
+// les données changent ici
+
+var list = adults.ToList();</code></pre>
+        <p class="aside reveal">L'exécution arrive quand on matérialise.</p>
+      </div>
+    </section>
+
+    <section class="slide real" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">LINQ dans la vraie vie</h2>
+        <div class="split reveal">
+          <ul class="bullets">
+            <li>- Filtrer des résultats d'API</li>
+            <li>- Valider des règles métier</li>
+            <li>- Transformer des DTOs</li>
+            <li>- Requêtes EF Core </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide practices" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">Erreurs courantes &amp; bonnes pratiques</h2>
+        <div class="columns reveal">
+          <div class="card">
+            <h3>À éviter</h3>
+            <ul class="bullets compact">
+              <li>Utiliser LINQ partout</li>
+              <li>Chaînes trop longues</li>
+              <li>Multiples énumérations</li>
+              <li>Single() sans vérifier</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Bonnes pratiques</h3>
+            <ul class="bullets compact">
+              <li>Si ça se lit comme de l'anglais, c'est bon</li>
+              <li>Si ça demande des commentaires, simplifier</li>
+              <li>Matérialiser une fois si réutilisé</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide wrap" aria-hidden="true">
+      <div class="content">
+        <h2 class="reveal">Conclusion</h2>
+        <ul class="bullets reveal">
+          <li>Le problème que LINQ résout</li>
+          <li>Pourquoi la lisibilité s'améliore</li>
+          <li>Pourquoi tout dev C# devrait le maîtriser</li>
+        </ul>
+        <p class="aside reveal">"LINQ transforme les boucles en intentions."</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="hud" aria-hidden="true">
+    <div class="progress"><div class="bar"></div></div>
+    <div class="counter">1 / 15</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
